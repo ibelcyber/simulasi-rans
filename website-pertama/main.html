@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>simulasi rans</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: black;
+      color: #00ffcc;
+      font-family: "Courier New", monospace;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      color: red;
+      font-size: 2.5em;
+      text-shadow: 0 0 10px red, 0 0 20px red;
+      animation: flicker 1.5s infinite alternate;
+    }
+
+    @keyframes flicker {
+      from { opacity: 1; }
+      to { opacity: 0.7; }
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #00ffcc;
+      text-shadow: 0 0 10px #00ffcc;
+    }
+
+    #countdown {
+      font-size: 2em;
+      margin: 20px;
+      color: yellow;
+      text-shadow: 0 0 15px yellow;
+    }
+
+    .pin-box {
+      margin-top: 20px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 1.2em;
+      background: black;
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      text-align: center;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      text-shadow: 0 0 5px black;
+    }
+
+    button:hover {
+      background: darkred;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    /* Popup edukasi */
+    #eduPopup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.95);
+      color: #00ffcc;
+      border: 2px solid #00ffcc;
+      padding: 20px;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 10px;
+      text-align: left;
+      display: none;
+      box-shadow: 0 0 20px #00ffcc;
+    }
+
+    #eduPopup h2 {
+      color: lime;
+      text-align: center;
+    }
+
+    #closeBtn {
+      margin-top: 20px;
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: lime;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      border-radius: 5px;
+      color: black;
+      font-weight: bold;
+    }
+
+    #closeBtn:hover {
+      background: green;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚠️ FILE ANDA DIENKRIPSI ⚠️</h1>
+  <p>SEMUAH FILE ANDA TERLAH TERKUNCI DENGAN RANSOM.<br>
+     KIRIM <b>500.000 KE NOMER 085975420751</b> UNTUK MEMBUKA KUNCI.<br>
+     WAKTU ANDA TERBATAS!</p>
+  <div id="countdown"></div>
+
+  <div class="pin-box">
+    <input type="password" id="pin" maxlength="6" placeholder="Enter PIN">
+    <button onclick="unlock()">BUKA</button>
+  </div>
+  <div id="status"></div>
+
+  <audio id="alarm" autoplay loop>
+    <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" type="audio/ogg">
+  </audio>
+
+  <!-- Popup edukasi -->
+  <div id="eduPopup">
+    <h2>🔐 Edukasi Keamanan Siber</h2>
+    <p>
+      Selamat! Sistem berhasil dibuka kembali.  
+      <br><br>
+      Ini hanyalah simulasi, tapi serangan ransomware asli bisa sangat berbahaya.  
+      Berikut beberapa tips untuk melindungi diri dari ancaman siber:
+    </p>
+    <ul>
+      <li>💾 Selalu <b>backup data penting</b> di tempat terpisah.</li>
+      <li>🔑 Gunakan <b>password yang kuat</b> dan aktifkan autentikasi dua faktor.</li>
+      <li>🛡️ Jangan asal klik link atau lampiran email yang mencurigakan.</li>
+      <li>⚙️ Perbarui software dan antivirus secara rutin.</li>
+      <li>🌐 Waspadai jaringan publik, gunakan VPN bila perlu.</li>
+    </ul>
+    <button id="closeBtn" onclick="closeEdu()">Tutup</button>
+  </div>
+
+  <script>
+    // Fake Countdown
+    let timeLeft = 120; // 2 menit
+    const countdownElement = document.getElementById("countdown");
+    const statusElement = document.getElementById("status");
+    const alarm = document.getElementById("alarm");
+    const eduPopup = document.getElementById("eduPopup");
+
+    function updateCountdown() {
+      let mins = Math.floor(timeLeft / 60);
+      let secs = timeLeft % 60;
+      countdownElement.textContent = `Time Left: ${mins}:${secs < 10 ? "0" : ""}${secs}`;
+      if (timeLeft <= 0) {
+        countdownElement.textContent = "💀 TIME OVER! 💀";
+        alarm.pause();
+        clearInterval(timer);
+      }
+      timeLeft--;
+    }
+
+    updateCountdown();
+    let timer = setInterval(updateCountdown, 1000);
+
+    // PIN Unlock
+    const correctPIN = "252525"; // PIN yang benar
+
+    function unlock() {
+      let pin = document.getElementById("pin").value;
+      if (pin === correctPIN) {
+        statusElement.style.color = "lime";
+        statusElement.textContent = "✅ Access Restored. System Unlocked.";
+        alarm.pause();
+        clearInterval(timer);
+        countdownElement.textContent = "SYSTEM UNLOCKED";
+        document.body.style.background = "linear-gradient(to right, black, green)";
+        eduPopup.style.display = "block"; // tampilkan popup edukasi
+      } else {
+        statusElement.style.color = "red";
+        statusElement.textContent = "❌ Incorrect PIN!";
+      }
+    }
+
+    function closeEdu() {
+      eduPopup.style.display = "none";
+    }
+  </script>
+</body>
+</html>
